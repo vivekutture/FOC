@@ -58,7 +58,7 @@ fun LoginScreen(){
         Text("Login", modifier = Modifier.padding(bottom = 40.dp), fontSize = 25.sp, fontWeight = FontWeight.Bold)
         Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically,modifier = Modifier.padding(bottom = 40.dp)){
             Text("Login ID", fontSize = 18.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.width(100.dp), textAlign = TextAlign.Center)
-            TextField(value = loginId.value, onValueChange = {loginId.value=it}, modifier = Modifier
+            TextField(value = loginId.value.trim(), onValueChange = {loginId.value=it.trim()}, modifier = Modifier
                 .width(250.dp)
                 .border(
                     1.dp, Color.Black,
@@ -75,8 +75,8 @@ fun LoginScreen(){
         Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 40.dp)){
             Text("Password",fontSize = 18.sp, fontWeight = FontWeight.SemiBold,modifier = Modifier.width(100.dp), textAlign = TextAlign.Center)
             TextField(
-                value = password.value,
-                onValueChange = { password.value = it },
+                value = password.value.trim(),
+                onValueChange = { password.value = it.trim() },
                 modifier = Modifier
                     .width(250.dp)
                     .border(
@@ -108,7 +108,7 @@ fun LoginScreen(){
                 }
             )
         }
-        Button(onClick = { Toast.makeText(context,"Login Successful",Toast.LENGTH_SHORT).show()}, modifier = Modifier.size(150.dp,50.dp), enabled = !(loginId.value.isEmpty() || password.value.isEmpty())) {
+        Button(onClick = { Toast.makeText(context,"Login Successful",Toast.LENGTH_SHORT).show()}, modifier = Modifier.size(150.dp,50.dp), enabled = !(loginId.value.trim().isEmpty() || password.value.trim().isEmpty())) {
             Text(text = "Login", fontSize = 20.sp)
         }
     }
