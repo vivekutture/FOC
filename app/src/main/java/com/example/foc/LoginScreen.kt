@@ -1,5 +1,6 @@
 package com.example.foc
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -8,6 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -31,8 +33,13 @@ fun LoginScreen(modifier: Modifier = Modifier) {
         mutableStateOf("")
     }
     val passwordVisible = remember { mutableStateOf(false) }
-
     val context = LocalContext.current
+    var invalidLoginId by rememberSaveable {
+        mutableStateOf(false)
+    }
+    var invalidPassword by rememberSaveable {
+        mutableStateOf(false)
+    }
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -62,12 +69,22 @@ fun LoginScreen(modifier: Modifier = Modifier) {
 
             OutlinedTextField(
                 value = loginId.value.trim(),
-                onValueChange = { loginId.value = it.trim() },
+                onValueChange = {
+                    loginId.value = it.trim()
+                    invalidLoginId = false
+                },
                 modifier = Modifier
                     .width(350.dp),
                 singleLine = true,
                 keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
-                label = { Text(text = "Login ID", fontSize = 15.sp) }
+                label = { Text(text = "Login ID", fontSize = 15.sp) },
+                isError = invalidLoginId,
+                supportingText = {
+                    if (invalidLoginId) {
+                        Text("Invalid Login ID")
+                    }
+                }
+
             )
         }
         Row(
@@ -78,7 +95,10 @@ fun LoginScreen(modifier: Modifier = Modifier) {
 
             OutlinedTextField(
                 value = password.value.trim(),
-                onValueChange = { password.value = it.trim() },
+                onValueChange = {
+                    password.value = it.trim()
+                    invalidPassword = false
+                },
                 modifier = Modifier
                     .width(350.dp),
                 singleLine = true,
@@ -95,7 +115,14 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                         Icon(imageVector = image, description)
                     }
                 },
-                label = { Text(text = "Password", fontSize = 15.sp) }
+                label = { Text(text = "Password", fontSize = 15.sp) },
+                isError = invalidPassword,
+                supportingText = {
+                    if (invalidPassword) {
+                        Text("Invalid Password")
+                    }
+                }
+
             )
         }
         Text(
@@ -115,11 +142,22 @@ fun LoginScreen(modifier: Modifier = Modifier) {
             textDecoration = TextDecoration.Underline
         )
         Button(
-            onClick = { Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show() },
+            onClick = {
+                invalidLoginId = loginId.value.trim().isEmpty()
+                invalidPassword = password.value.trim().isEmpty()
+                if (!invalidLoginId && !invalidPassword) {
+                    login(context)
+                }
+            },
             modifier = Modifier.size(150.dp, 50.dp),
-            enabled = !(loginId.value.trim().isEmpty() || password.value.trim().isEmpty())
+            /* enabled = !(loginId.value.trim().isEmpty() || password.value.trim().isEmpty()) */
         ) {
             Text(text = "Login", fontSize = 20.sp)
         }
     }
+}
+
+
+fun login(context: Context) {
+    Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show()
 }
